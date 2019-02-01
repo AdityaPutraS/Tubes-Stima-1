@@ -1,3 +1,11 @@
+
+
+""" INFORMASI :
+Untuk semua cara solvingnya bisa ditulis disini, kalau ada cara solving lain
+tinggal buat fungsi baru aja, kalau bisa tolong jelasin juga algoritma bagaimana
+secara jelas supaya nanti gampang buat laporannya hehe...
+"""
+
 def solve(a,b,c,d, pengaliTotal = 5):
     #Menggunakkan algoritma greedy 1-0 knapsack
     #Dengan tujuan memaksimalkan nilai dengan weight maksimal 24
