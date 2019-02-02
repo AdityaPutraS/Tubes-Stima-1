@@ -2,7 +2,8 @@ import sys
 import time
 import random
 from scorer import score
-from solver import *
+from solver import solve
+from visualKartu import visualisasiSolusi
 
 def main():
     ## SETUP
@@ -28,8 +29,8 @@ def main():
     # If inFile is empty create a new test case
     if len(test_case) == 0:
         deck = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
-        for i in range(0, 13):
-            for j in range(0, 4):
+        for _ in range(0, 13):
+            for _ in range(0, 4):
                 while True:
                     num = random.randint(1, 13)
                     if deck[num-1] > 0:
@@ -44,11 +45,9 @@ def main():
         test_case = [[int(x) for x in line.split()] for line in inFile.readlines()]
 
     ## MAIN CODE GOES HERE
-    
-
-
-
-
+    a,b,c,d = test_case[0]
+    solusi = solve(a,b,c,d)
+    visualisasiSolusi(solusi)
 
     # Closing the file
     inFile.close()
