@@ -5,6 +5,84 @@ tinggal buat fungsi baru aja, kalau bisa tolong jelasin juga algoritma bagaimana
 secara jelas supaya nanti gampang buat laporannya hehe...
 """
 
+def score(solusi,pengaliTotal = 5, pengaliOperator = 1):
+    plus = solusi.count('+')*5
+    kurang = solusi.count('-')*4
+    kali = solusi.count('*')*3
+    bagi = solusi.count('/')*2
+    kurung1 = solusi.count('(')
+    kurung2 = solusi.count(')')
+    if(kurung1 != kurung2):
+        return -10000
+    else:
+        try:
+            delta24 = abs(eval(solusi)-24)
+        except ZeroDivisionError:
+            delta24 = 10000000
+        operator = plus+kurang+kali+bagi-kurung1
+        return operator*pengaliOperator-delta24*pengaliTotal
+
+def solve24(angka,exprStr = '%d%c%d%c%d%c%d', pengaliTotal = 5, pengaliOperator = 1):
+    operator = ['+','+','+']
+    arrSolusi = [0 for i in range(7)] 
+    arrSolusi[::2] = [0,0,0,0]
+    arrSolusi[1::2] = operator
+    sisaInput = {}
+    for a in angka:
+        if(a in sisaInput):
+            sisaInput[a] += 1
+        else:
+            sisaInput[a] = 1
+    #Persiapan greedy
+    pilihan = []
+    availOperan = ['+','-','*','/']
+    for a in angka:
+        for op in availOperan:
+            weight = 0
+            value = 0
+            pilihan.append([op,a,value,weight])
+    #Greedy, Terinspirasi 1-0 Knapsack Greedy
+    start = True
+    idx = 0
+    while(sum(sisaInput.values()) > 0):
+        #Update value,weight
+        for p in pilihan:
+            tempArrSolusi = arrSolusi
+            if(start):
+                tempArrSolusi[idx] = p[1]
+            else:
+                tempArrSolusi[idx*2-1] = p[0]
+                tempArrSolusi[idx*2] = p[1]
+            solusi = exprStr % tuple(tempArrSolusi)
+            p[2] = score(solusi,pengaliTotal=pengaliTotal,pengaliOperator=pengaliOperator)
+            try:
+                p[3] = abs(eval(solusi)-24)
+            except ZeroDivisionError:
+                p[3] = 10000000
+            #Menghindari div by zero
+            if(p[3] == 0):
+                p[3] = 10**-10
+        #Selesai update value,weight
+        #Sort sesuai value/weight
+        pilihan.sort(key = lambda wv : wv[2]/wv[3], reverse = True)
+        #Ambil yang pertama kalo masih bisa diambil angkanya
+        terpilih = pilihan[0]
+        while(sisaInput[terpilih[1]] == 0):
+            del pilihan[0]
+            terpilih = pilihan[0]
+        #Masuk ke solusi
+        if(start):
+            arrSolusi[idx] = terpilih[1]
+        else:
+            arrSolusi[idx*2-1] = terpilih[0]
+            arrSolusi[idx*2] = terpilih[1]
+        sisaInput[terpilih[1]] -= 1
+        del pilihan[0]
+        start = False
+        idx += 1
+    return arrSolusi
+
+
 def solve(a,b,c,d, pengaliTotal = 5, pengaliOperator = 1):
     '''
     Menggunakkan algoritma greedy 1-0 knapsack
